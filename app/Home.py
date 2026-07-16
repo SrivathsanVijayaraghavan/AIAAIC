@@ -2,7 +2,20 @@ import streamlit as st
 import plotly.express as px
 from core.queries import get_stats_overview, get_incidents_by_year
 from app.components.filters import render_global_sidebar, get_current_filters, _hashable_filters
+import os
+from pathlib import Path
 
+# Auto-build database on first startup if it doesn't exist
+db_path = Path(__file__).resolve().parent.parent / "data" / "incidents.db"
+if not db_path.exists():
+    import subprocess
+    import sys
+    st.info("⏳ First run: building database from AIAAIC source. This takes ~60 seconds...")
+    result = subprocess.run(
+        [sys.executable, "-m", "ingestion.run_pipeline"],
+        cwd=str(Path(__file__).resolve().parent.parent)
+    )
+    st.rerun()
 st.set_page_config(
     page_title="AI Incident Analytics",
     page_icon="📊",

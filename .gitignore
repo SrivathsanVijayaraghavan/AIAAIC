@@ -28,3 +28,4 @@ Thumbs.db
 
 # Byte-compiled
 *.pyc
+data/incidents.db
