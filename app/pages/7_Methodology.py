@@ -1,6 +1,10 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 import streamlit as st
 import os
-from pathlib import Path
+from pathlib import Path  # noqa: F811 – re-import after sys.path fix
 from app.components.filters import render_global_sidebar
 from core.queries import get_metadata
 

@@ -1,33 +1,26 @@
-import streamlit as st
 import sys
 from pathlib import Path
+
+# Ensure the project root is always on the Python path so that
+# `core.*`, `app.*`, and `ingestion.*` imports resolve correctly
+# regardless of the working directory Streamlit uses.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
+import streamlit as st
+import plotly.express as px
+from core.queries import get_stats_overview, get_incidents_by_year
+from app.components.filters import render_global_sidebar, get_current_filters, _hashable_filters
 
 _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 _DB_PATH = _PROJECT_ROOT / "data" / "incidents.db"
 
 if not _DB_PATH.exists():
     st.info("⏳ First run: fetching and building database (~60 seconds)...")
-    sys.path.insert(0, str(_PROJECT_ROOT))
     from ingestion.run_pipeline import run_pipeline
     run_pipeline()
     st.rerun()
-import plotly.express as px
-from core.queries import get_stats_overview, get_incidents_by_year
-from app.components.filters import render_global_sidebar, get_current_filters, _hashable_filters
-import os
-from pathlib import Path
 
-# Auto-build database on first startup if it doesn't exist
-db_path = Path(__file__).resolve().parent.parent / "data" / "incidents.db"
-if not db_path.exists():
-    import subprocess
-    import sys
-    st.info("⏳ First run: building database from AIAAIC source. This takes ~60 seconds...")
-    result = subprocess.run(
-        [sys.executable, "-m", "ingestion.run_pipeline"],
-        cwd=str(Path(__file__).resolve().parent.parent)
-    )
-    st.rerun()
+
 st.set_page_config(
     page_title="AI Incident Analytics",
     page_icon="📊",
