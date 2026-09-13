@@ -10,3 +10,8 @@ port = 7860
 enableCORS = false
 maxUploadSize = 5
 enableXsrfProtection = false
+
+[server]
+port = 8501
+headless = true
+enableCORS = false
