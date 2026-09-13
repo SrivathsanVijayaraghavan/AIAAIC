@@ -1,6 +1,14 @@
 import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+# Auto-build DB if not present (needed on Streamlit Cloud)
+if not Path("data/incidents.db").exists():
+    import subprocess
+    subprocess.run(
+        [sys.executable, "ingestion/run_pipeline.py"],
+        check=True
+    )
 # Ensure the project root is always on the Python path so that
 # `core.*`, `app.*`, and `ingestion.*` imports resolve correctly
 # regardless of the working directory Streamlit uses.
